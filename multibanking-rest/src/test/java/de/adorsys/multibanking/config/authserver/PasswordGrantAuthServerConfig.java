@@ -1,6 +1,7 @@
 package de.adorsys.multibanking.config.authserver;
 
 import org.adorsys.docusafe.business.impl.DocumentSafeServiceImpl;
+import org.adorsys.docusafe.business.impl.WithCache;
 import org.adorsys.encobject.filesystem.FileSystemExtendedStorageConnection;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +35,8 @@ public class PasswordGrantAuthServerConfig {
 	@Bean
 	UserDataRepository userDataRepository(ObjectMapper objectMapper) {
 		// Warning you can not use the client applications docusafe here.
-		FileSystemExtendedStorageConnection storageConnection = new FileSystemExtendedStorageConnection("target/authServer/"+Ids.uuid());
-		DocumentSafeServiceImpl documentSafeServiceImpl = new DocumentSafeServiceImpl(storageConnection);
+		FileSystemExtendedStorageConnection storageConnection = new FileSystemExtendedStorageConnection("target/authServer/"+Ids.uuid(), null);
+		DocumentSafeServiceImpl documentSafeServiceImpl = new DocumentSafeServiceImpl(WithCache.TRUE, storageConnection);
 		ExceptionHandlingDocumentSafeService documentSafeService = new ExceptionHandlingDocumentSafeService(documentSafeServiceImpl);
 		return new FsUserDataRepository(documentSafeService, objectMapper);
 	}

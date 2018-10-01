@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.adorsys.docusafe.business.DocumentSafeService;
 import org.adorsys.docusafe.business.impl.DocumentSafeServiceImpl;
+import org.adorsys.docusafe.business.impl.WithCache;
 import org.adorsys.docusafe.business.types.UserID;
 import org.adorsys.docusafe.business.types.complex.UserIDAuth;
 import org.adorsys.encobject.domain.ReadKeyPassword;
@@ -47,8 +48,8 @@ public class AuthServerConfig {
 
 	@Bean
 	DocumentSafeService documentSafeService() {
-		FileSystemExtendedStorageConnection storageConnection = new FileSystemExtendedStorageConnection("target/authServer/"+RandomStringUtils.randomAlphanumeric(10).toUpperCase());
-		DocumentSafeServiceImpl documentSafeService= new DocumentSafeServiceImpl(storageConnection);
+		FileSystemExtendedStorageConnection storageConnection = new FileSystemExtendedStorageConnection("target/authServer/"+RandomStringUtils.randomAlphanumeric(10).toUpperCase(), null);
+		DocumentSafeServiceImpl documentSafeService= new DocumentSafeServiceImpl(WithCache.TRUE, storageConnection);
 		// Create system user.
 		if(!documentSafeService.userExists(systemId.getUserID())){
 			documentSafeService.createUser(systemId);

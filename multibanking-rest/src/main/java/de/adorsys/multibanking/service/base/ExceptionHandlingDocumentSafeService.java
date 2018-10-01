@@ -3,12 +3,9 @@ package de.adorsys.multibanking.service.base;
 import org.adorsys.cryptoutils.exceptions.BaseException;
 import org.adorsys.docusafe.business.DocumentSafeService;
 import org.adorsys.docusafe.business.types.UserID;
-import org.adorsys.docusafe.business.types.complex.DSDocument;
-import org.adorsys.docusafe.business.types.complex.DSDocumentStream;
-import org.adorsys.docusafe.business.types.complex.DocumentDirectoryFQN;
-import org.adorsys.docusafe.business.types.complex.DocumentFQN;
-import org.adorsys.docusafe.business.types.complex.UserIDAuth;
+import org.adorsys.docusafe.business.types.complex.*;
 import org.adorsys.docusafe.service.types.AccessType;
+import org.adorsys.encobject.types.ListRecursiveFlag;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nimbusds.jose.jwk.JWK;
@@ -130,7 +127,16 @@ public class ExceptionHandlingDocumentSafeService implements DocumentSafeService
     	}
     }
 
-    /**
+	@Override
+	public BucketContentFQN list(UserIDAuth userIDAuth, DocumentDirectoryFQN documentDirectoryFQN, ListRecursiveFlag listRecursiveFlag) {
+		try {
+			return delegate.list(userIDAuth, documentDirectoryFQN, listRecursiveFlag);
+		} catch(BaseException b){
+			throw checkContainer(b, userIDAuth);
+		}
+	}
+
+	/**
      * GRANT/DOCUMENT
      * ===========================================================================================
      */
@@ -164,7 +170,16 @@ public class ExceptionHandlingDocumentSafeService implements DocumentSafeService
     	}
     }
 
-    @Override
+	@Override
+	public boolean grantedDocumentExists(UserIDAuth userIDAuth, UserID userID, DocumentFQN documentFQN) {
+		try {
+			return delegate.grantedDocumentExists(userIDAuth, userID, documentFQN);
+		} catch(BaseException b){
+			throw checkContainer(b, userIDAuth);
+		}
+	}
+
+	@Override
 	public JWK findPublicEncryptionKey(UserID userID) {
     	try {
     		return delegate.findPublicEncryptionKey(userID);
